@@ -1,18 +1,11 @@
-var words = [];
-var nouns = [];
-async function fetchWords() {
-	let response = await fetch("https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt");
-	let txt = await response.text();
-    let results	= await txt.split("\n");
-	return results
-};
-
+var nouns = []
 class Noun {
 	
 	constructor(word) {
 		this.word = word;
 	}
 	
+
 	async loadImage() {
     	const parameters = {
 	        key: "19185430-0ca8ecbb0c60d76842e868b06",
@@ -38,7 +31,20 @@ class Noun {
     	};
     	request.send();
 	}
-	
+
+
+	static async isNoun(word) {
+		let response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
+		let json = await response.json();
+		// if word doesn't exist in dictionary, resturn false
+		if (json["title"] == "No Definitions Found") { return false;}
+		// search all the exisiting meanings to see if any of them are a noun
+		for (let meaning in json[0].meanings) {
+			if (meaning[0].partOfSpeech == "noun") return true;
+		}
+		// if nothing is returned by now, words exist, but isn't a noun
+		return false
+	};
 }
 
 async function findNouns(n = 1) {
@@ -50,31 +56,28 @@ async function findNouns(n = 1) {
         let isNoun = (async () => {
             let response = await fetch(
                 `https://api.dictionaryapi.dev/api/v2/entries/en/${randomWord}`
-            );
-            let json = await response.json();
+			)
+			let json = await response.json();
             if (json["title"] == "No Definitions Found") {
                 return false;
             } else {
+				console.log(json)
                 for (let meaning in json[0].meanings) {
                     if (meaning[0].partOfSpeech == "noun") return true;
                 }
             }
-        })();
+		})();
         if (isNoun) {
 			nouns.push(new Noun(randomWord))
         }
-    } while (nouns.length - originalCount < n);
+	} while (nouns.length - originalCount < n);
 }
-fetchWords()
-	.then((fetchedWords) => {
-		words = fetchedWords
-	});
-		
-$('button').click(function() {
-	console.log('clicked')
-	findNouns().then(() => {
-		console.log(noun[0].word)
-		$('#noun').text(noun[0].word)
-	})
-});
 
+async function findNouns(n = 1) {
+	let randomWord = words[
+		Math.floor(Math.random() * words.length)
+	];
+	Noun.isNoun(randomWord).then(isNoun=>{
+		return isNoun
+	});
+}
