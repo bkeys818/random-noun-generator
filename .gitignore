@@ -1,2 +1,3 @@
-/.DS_Store
-/.vscode
+*.css.map
+*.css
+*.js.map
