@@ -1,0 +1,38 @@
+name: Build site
+
+on:
+  push:
+    branches: [ build-action ]
+
+env:
+  PUB_BRANCH: publish
+
+jobs:
+  run-build-script:
+    name: Run NPM Build Script
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          ref: build-action
+
+      - name: Create New Branch
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git branch -f $PUB_BRANCH
+          git checkout $PUB_BRANCH
+          git push -uf origin $PUB_BRANCH
+
+      - name: Intall Dependencies
+        run: npm install
+
+      - name: Run Build Script
+        run: npm run build
+
+      - name: Create New Branch
+        run: |
+          git add .
+          git commit -m ":rocket: Build site"
+          git push -uf origin $PUB_BRANCH

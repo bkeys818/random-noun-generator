@@ -4,7 +4,9 @@
   "description": "A website that generates random nouns. Very useful for finding inspiration.",
   "main": "script.js",
   "scripts": {
-    "test": "node script.js"
+    "build": "npm run compile-sass && npm run compile-sass",
+    "compile-sass": "sass root:root --embed-source-map",
+    "compile-ts": "tsc -p tsconfig.json"
   },
   "repository": {
     "type": "git",
