@@ -31,6 +31,12 @@ jobs:
       - name: Run Build Script
         run: npm run build
 
+      - name: Make root/ main direcotry
+        run: |
+          find . -maxdepth 1 -mindepth 1 \( -type d -o -type f \) -not \( -name root -o -name .git \) -exec rm -r {} \;
+          mv ./root/* ./
+          rm -r root
+
       - name: Create New Branch
         run: |
           git add .
