@@ -5,6 +5,7 @@
   "main": "script.js",
   "scripts": {
     "build": "npm run compile-sass && npm run compile-ts",
+    "postbuild": "find . -maxdepth 1 -mindepth 1 \\( -type d -o -type f \\) -not \\( -name root -o -name .git \\) -exec rm -r {} \\; && mv ./root/* ./ && rm -r root",
     "compile-sass": "sass root:root --embed-source-map",
     "compile-ts": "tsc -p tsconfig.json"
   },
